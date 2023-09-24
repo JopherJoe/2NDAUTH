@@ -5,13 +5,14 @@ const { isLoggedIn } = require("./middleware");
 const router = Router();
 
 router.get("/", isLoggedIn, async (req, res) => {
-  const { username, email } = req.user;
+  const { username, email, firstname, lastname } = req.user;
 
   try {
-    const todos = await Todo.find({ username, email });
+    const todos = await Todo.find({ email });
     const responseData = {
-      username,
-      email
+      email,
+      firstname,
+      lastname
     };
     res.status(200).json(responseData);
   } catch (error) {
@@ -52,13 +53,22 @@ router.put("/:id", isLoggedIn, async (req, res) => {
 });
 
 router.delete("/:id", isLoggedIn, async (req, res) => {
-  const { username } = req.user;
+  const { email } = req.user;
   const _id = req.params.id;
-  res.json(
-    await Todo.remove({ username, _id }).catch((error) =>
-      res.status(400).json({ error })
-    )
-  );
+  
+  try {
+    const result = await Todo.deleteOne({ email, _id });
+    
+    if (result.deletedCount === 0) {
+      return res.status(404).json({ error: "Todo not found" });
+    }
+    
+    res.status(200).json({ message: "Todo deleted successfully" });
+  } catch (error) {
+    console.error("Error deleting todo:", error);
+    res.status(500).json({ error: "An error occurred while deleting the todo" });
+  }
 });
+
 
 module.exports = router

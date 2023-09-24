@@ -1,9 +1,15 @@
 const {Schema, model} = require("../db/connection")
 
 const TodoSchema = new Schema({
-    username: {
+    firstname: {
         type: String, 
-        required: true},
+        required: true
+    },
+    
+    lastname: {
+        type: String
+    },
+    
     reminder: {
         type: String, 
         required: true

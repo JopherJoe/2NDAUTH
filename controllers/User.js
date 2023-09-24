@@ -32,13 +32,31 @@ router.post("/login", async (req, res) => {
       const result = await bcrypt.compare(req.body.password, user.password);
       if (result) {
         const SECRET = process.env.JWT_SECRET || 'jopher123456';
-        const token = await jwt.sign({ email: user.email }, SECRET);
-        res.json({ token });
+        
+        // Include user profile data in the payload
+        const payload = {
+          email: user.email,
+          firstname: user.firstname,
+          lastname: user.lastname,
+          id: user._id, // or any other user identifier
+        };
+
+        const token = jwt.sign(payload, SECRET);
+
+        // Return the token and user profile data in the response
+        const userProfile = {
+          firstname: user.firstname,
+          lastname: user.lastname,
+          email: user.email,
+          id: user._id,
+        };
+
+        res.json({ token, userProfile });
       } else {
         res.status(400).json({ error: "password doesn't match" });
       }
     } else {
-      res.status(400).json({ error: "Email doesn't exist" });
+      res.status(400).json({ error: "User doesn't exist" });
     }
   } catch (error) {
     res.status(400).json({ error });
