@@ -17,8 +17,10 @@ const TodoSchema = new Schema({
     completed: {
         type: Boolean, 
         required: true, 
-        default: false},
-    email: {
+        default: false
+    },
+    
+    email: {    
         type: String,
         required: true,
     }
