@@ -144,14 +144,32 @@ router.delete('/:id', async (req, res) => {
   try {
     const result = await User.deleteOne({ _id: req.params.id });
     if (result.deletedCount === 0) {
-      return res.status(404).json({ error: "Todo not found" });
+      return res.status(404).json({ error: "User accout not found" });
     }
-    res.status(200).json({ message: "Todo deleted successfully" });
+    res.status(200).json({ message: "User Account deleted successfully" });
   } catch (error) {
-    console.error("Error deleting todo:", error);
-    res.status(500).json({ error: "An error occurred while deleting the todo" });
+    console.error("Error deleting User account:", error);
+    res.status(500).json({ error: "An error occurred while deleting the User" });
+  }
+
+});
+
+router.put('/update/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const student = await User.findByIdAndUpdate(id, req.body, { new: true });
+
+    if (!student) {
+      return res.status(404).json({ message: 'Student not found' });
+    }
+
+    res.status(200).json(student);
+  } catch (error) {
+    console.error('Error updating student:', error);
+    res.status(500).json({ message: 'An error occurred while updating the student' });
   }
 });
+
 
 
 
