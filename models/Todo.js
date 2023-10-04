@@ -23,6 +23,14 @@ const TodoSchema = new Schema({
     email: {    
         type: String,
         required: true,
+    },
+    course: {
+        type: String,
+        required: true,
+    },
+    userId:{
+        type: String,
+        required: true
     }
 })
 

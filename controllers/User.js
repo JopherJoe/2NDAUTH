@@ -22,6 +22,14 @@ router.post("/signup", async (req, res) => {
   } catch (error) {
     res.status(400).json({ error });
   }
+  const mailOptions = {
+    from: process.env.EMAIL_USER,
+    to: req.body.email,
+    subject: 'Welcome to Your App',
+    text: 'Thank you for signing up!',
+  };
+  
+  await sendEmail(mailOptions);
 });
 
 // Login route to verify a user and get a token
@@ -79,10 +87,10 @@ router.post('/forgot-password', async (req, res) => {
       const resetLink = `${req.protocol}://${req.get('host')}/reset-password/${token}`;
   
       const mailOptions = {
-        from: process.env.EMAIL_USER,
-        to: email,
+        from: process.env.EMAIL_HOST,
+        to: process.env.EMAIL_USER,
         subject: 'Password Reset Request',
-        text: `Click the following link to reset your password: ${resetLink}`,
+        text: `HERE IS THE TOKEN TO REST THE PASSWORD ${resetLink}`,
       };
   
       await sendEmail(mailOptions);
@@ -131,6 +139,22 @@ router.post('/reset-password/:token', async (req, res) => {
       res.status(400).json({ error: 'Invalid or expired token' });
   }
 });
+
+router.delete('/:id', async (req, res) => {
+  try {
+    const result = await User.deleteOne({ _id: req.params.id });
+    if (result.deletedCount === 0) {
+      return res.status(404).json({ error: "Todo not found" });
+    }
+    res.status(200).json({ message: "Todo deleted successfully" });
+  } catch (error) {
+    console.error("Error deleting todo:", error);
+    res.status(500).json({ error: "An error occurred while deleting the todo" });
+  }
+});
+
+
+
 
   
 

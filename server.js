@@ -9,6 +9,7 @@ const {log} = require("mercedlogger")
 const cors = require("cors")
 const UserRouter = require("./controllers/User")
 const TodoRouter = require("./controllers/Todo")
+const EnrollmentRouter = require ("./controllers/enrollment")
 const bodyParser = require("body-parser")
 
 
@@ -30,5 +31,6 @@ app.get("/", (req, res) => {
 })
 app.use("/user", UserRouter)
 app.use("/todos", TodoRouter)
+app.use("/enroll", EnrollmentRouter)
 
 app.listen(PORT, () => log.green("SERVER STATUS", `Listening on port ${PORT}`))

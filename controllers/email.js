@@ -19,6 +19,8 @@ transporter.verify(function (error, success) {
   }
 });
 
+
+
 const sendEmail = async (mailOptions) => {
   try {
     await transporter.sendMail(mailOptions); // Use sendMail, not sendEmail

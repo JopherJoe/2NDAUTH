@@ -1,37 +1,47 @@
 const { Router } = require("express");
 const Todo = require("../models/Todo");
-const { isLoggedIn } = require("./middleware");
+
+const Enrollment = require('../models/Enrollment');
+const User = require('../models/User');
 
 const router = Router();
-
-router.get("/", isLoggedIn, async (req, res) => {
-  const { username, email, firstname, lastname } = req.user;
-
+router.get('/', async (req, res) => {
   try {
-    const todos = await Todo.find({ email });
-    const responseData = {
-      email,
-      firstname,
-      lastname
-    };
-    res.status(200).json(responseData);
+    // Get the user's ID from the authenticated user's token
+    const { id: userId } = req.user;
+
+    // Find the user by ID
+    const user = await User.findById(userId);
+
+    if (!user) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+
+    // Respond with the user data
+    res.status(200).json(user);
   } catch (error) {
-    console.error("Error fetching todos:", error);
-    res.status(500).json({ error: "An error occurred while fetching todos" });
+    console.error('Error fetching user data:', error);
+    res.status(500).json({ error: 'An error occurred while fetching user data' });
   }
 });
 
-router.get("/:id", isLoggedIn, async (req, res) => {
-  const { username } = req.user;
-  const _id = req.params.id;
-  res.json(
-    await Todo.findOne({ username, _id }).catch((error) =>
-      res.status(400).json({ error })
-    )
-  );
+
+router.get('/findById/:id', async (req, res) => {
+  try {
+    const studentId = req.params.id;
+    const student = await User.findById(studentId);
+
+    if (!student) {
+      return res.status(404).json({ message: 'Student was not found' });
+    }
+
+    res.status(200).json(student);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
 });
 
-router.post("/", isLoggedIn, async (req, res) => {
+router.post("/",  async (req, res) => {
   const { username } = req.user; 
   req.body.username = username;
   res.json(
@@ -41,7 +51,7 @@ router.post("/", isLoggedIn, async (req, res) => {
   );
 });
 
-router.put("/:id", isLoggedIn, async (req, res) => {
+router.put("/:id", async (req, res) => {
   const { username } = req.user;
   req.body.username = username;
   const _id = req.params.id;
@@ -52,21 +62,12 @@ router.put("/:id", isLoggedIn, async (req, res) => {
   );
 });
 
-router.delete("/:id", isLoggedIn, async (req, res) => {
-  const { email } = req.user;
-  const _id = req.params.id;
-  
+router.delete('/delete/:id', async (req, res) =>{
   try {
-    const result = await Todo.deleteOne({ email, _id });
-    
-    if (result.deletedCount === 0) {
-      return res.status(404).json({ error: "Todo not found" });
-    }
-    
-    res.status(200).json({ message: "Todo deleted successfully" });
+      const task = await Todo.findByIdAndRemove(req.params.id);
+      res.json(task);
   } catch (error) {
-    console.error("Error deleting todo:", error);
-    res.status(500).json({ error: "An error occurred while deleting the todo" });
+      res.status(400).json({ error: error.message})
   }
 });
 
