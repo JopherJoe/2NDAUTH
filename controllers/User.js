@@ -43,10 +43,11 @@ router.post("/login", async (req, res) => {
         
         // Include user profile data in the payload
         const payload = {
-          email: user.email,
           firstname: user.firstname,
           lastname: user.lastname,
-          id: user._id, // or any other user identifier
+          email: user.email,
+          id: user._id,
+          contact_no: user.contact_no, // or any other user identifier
         };
 
         const token = jwt.sign(payload, SECRET);
@@ -57,6 +58,7 @@ router.post("/login", async (req, res) => {
           lastname: user.lastname,
           email: user.email,
           id: user._id,
+          contact_no: user.contact_no,
         };
 
         res.json({ token, userProfile });
@@ -156,6 +158,7 @@ router.delete('/:id', async (req, res) => {
 
 router.put('/update/:id', async (req, res) => {
   try {
+    req.body.password = await bcrypt.hash(req.body.password, 10);
     const { id } = req.params;
     const student = await User.findByIdAndUpdate(id, req.body, { new: true });
 

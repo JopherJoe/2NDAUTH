@@ -16,8 +16,14 @@ const UserSchema = new Schema({
   },
   lastname: {
     type: String,
+    required: true,
   },
+  contact_no:{
+    type: Number
+  },
+  
 });
+
 
 const User = model("User", UserSchema);
 

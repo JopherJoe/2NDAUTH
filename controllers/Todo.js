@@ -1,6 +1,6 @@
 const { Router } = require("express");
 const Todo = require("../models/Todo");
-
+const { isLoggedIn } = require("./middleware");
 const Enrollment = require('../models/Enrollment');
 const User = require('../models/User');
 
@@ -26,7 +26,7 @@ router.get('/', async (req, res) => {
 });
 
 
-router.get('/findById/:id', async (req, res) => {
+router.get('/findById/:id' ,isLoggedIn, async (req, res) => {
   try {
     const studentId = req.params.id;
     const student = await User.findById(studentId);
