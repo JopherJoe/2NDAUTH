@@ -26,20 +26,39 @@ router.get('/', async (req, res) => {
 });
 
 
-router.get('/findById/:id' ,isLoggedIn, async (req, res) => {
+router.get('/findById/:id', isLoggedIn, async (req, res) => {
   try {
-    const studentId = req.params.id;
-    const student = await User.findById(studentId);
-
-    if (!student) {
-      return res.status(404).json({ message: 'Student was not found' });
+    const userId = req.params.id;
+    const user = await User.findById(userId);
+    
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
     }
+    
+    // Fetch enrollment data for the user
+    const enrollment = await Enrollment.findOne({ userId: userId });
+    
+    // Combine user and enrollment data into a single object
+    const profileData = {
+      user: {
+        firstname: user.firstname,
+        lastname: user.lastname,
+        email: user.email,
+        contact_no: user.contact_no,
+        // Add any other user fields you need
+      },
+      enrollment: {
+        course: enrollment.course,
+        // Add any other enrollment fields you need
+      },
+    };
 
-    res.status(200).json(student);
+    res.status(200).json(profileData);
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
 });
+
 
 router.post("/",  async (req, res) => {
   const { username } = req.user; 

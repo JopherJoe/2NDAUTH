@@ -32,7 +32,7 @@ router.post('/', isLoggedIn, async (req, res) => {
   }
 });
 
-router.get('/get', async (req, res) => {
+/*router.get('/get', async (req, res) => {
   try {
     const students = await Enrollment.find();
 
@@ -77,7 +77,7 @@ router.put('/update/:id', isLoggedIn, async (req, res) => {
     console.error('Enrollment update error:', error);
     res.status(500).json({ error: 'Enrollment update failed', details: error.message });
   }
-});
+});*/
 
 
 

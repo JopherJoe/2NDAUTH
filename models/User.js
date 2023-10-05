@@ -8,7 +8,7 @@ const UserSchema = new Schema({
   email: {
     type: String,
     required: true,
-    unique: true
+    unique: true,
   },
   firstname: {
     type: String,
@@ -18,12 +18,10 @@ const UserSchema = new Schema({
     type: String,
     required: true,
   },
-  contact_no:{
-    type: Number
+  contact_no: {
+    type: Number,
   },
-  
 });
-
 
 const User = model("User", UserSchema);
 
