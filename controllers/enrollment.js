@@ -12,12 +12,16 @@ router.post('/', isLoggedIn, async (req, res) => {
     console.log('req.user:', req.user);
 
     // Extract enrollment data from the request body
-    const { course } = req.body;
+    const { course, firstname, lastname, email, contact_no } = req.body;
 
     // Create a new enrollment record in the database
     const enrollment = await Enrollment.create({
       course,
-      userId: req.user.id, // Set the user ID from req.user
+      firstname,
+      lastname,
+      email,
+      contact_no,
+      userId: req.user.id // Set the user ID from req.user
     });
 
     // Respond with a success message or enrollment data
