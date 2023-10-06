@@ -29,32 +29,36 @@ router.get('/', async (req, res) => {
 router.get('/findById/:id', isLoggedIn, async (req, res) => {
   try {
     const userId = req.params.id;
+    console.log('Fetching profile for user ID:', userId);
+
     const user = await User.findById(userId);
-    
+    console.log('User:', user);
     if (!user) {
+      console.log('User not found');
       return res.status(404).json({ message: 'User not found' });
     }
-    
-    // Fetch enrollment data for the user
     const enrollment = await Enrollment.findOne({ userId: userId });
-    
-    // Combine user and enrollment data into a single object
+    console.log('Enrollment:', enrollment);
+
+    // You need to create account first and enroll to display the data
+    /*if (!enrollment) {
+      console.log('Enrollment data not found');
+      return res.status(404).json({ message: 'Enrollment data not found' });
+    }*/
     const profileData = {
       user: {
         firstname: user.firstname,
         lastname: user.lastname,
         email: user.email,
         contact_no: user.contact_no,
-        // Add any other user fields you need
       },
       enrollment: {
-        course: enrollment.course,
-        // Add any other enrollment fields you need
+        course:  enrollment ? enrollment.course : 'Not enrolled',
       },
     };
-
     res.status(200).json(profileData);
   } catch (error) {
+    console.error("Error:", error);
     res.status(500).json({ message: error.message });
   }
 });

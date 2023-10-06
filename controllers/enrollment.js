@@ -14,14 +14,15 @@ router.post('/', isLoggedIn, async (req, res) => {
     // Extract enrollment data from the request body
     const { course, firstname, lastname, email, contact_no } = req.body;
 
-    // Create a new enrollment record in the database
+    // Create a new enrollment record in the database with the correct user ID
     const enrollment = await Enrollment.create({
       course,
       firstname,
       lastname,
       email,
       contact_no,
-      userId: req.user.id // Set the user ID from req.user
+      userId: req.user.id, // Associate the enrollment with the correct user by storing the user's ID
+      enrolled: true // Set the enrolled field to true
     });
 
     // Respond with a success message or enrollment data
@@ -32,7 +33,8 @@ router.post('/', isLoggedIn, async (req, res) => {
   }
 });
 
-/*router.get('/get', async (req, res) => {
+
+router.get('/get', async (req, res) => {
   try {
     const students = await Enrollment.find();
 
@@ -46,7 +48,8 @@ router.post('/', isLoggedIn, async (req, res) => {
     res.status(500).json({ message: 'An error occurred while fetching students' });
   }
 });
-router.put('/update/:id', isLoggedIn, async (req, res) => {
+
+/*router.put('/update/:id', isLoggedIn, async (req, res) => {
   try {
     const { course } = req.body;
     const enrollmentId = req.params.id;
