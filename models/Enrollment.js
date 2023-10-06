@@ -4,7 +4,8 @@ const enrollmentSchema = new Schema({
    
     course :{
         type: String,
-        required: true
+        required: true,
+        
     },
     firstname: {
         type: String,
@@ -27,6 +28,11 @@ const enrollmentSchema = new Schema({
         ref: 'User', // Reference to the User model
         required: true,
         
+    },
+    enrolled:{
+        type: Boolean,
+        default: false,
+        unique: true
     }
 
 
