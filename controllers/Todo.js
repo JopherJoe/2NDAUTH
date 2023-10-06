@@ -8,7 +8,7 @@ const router = Router();
 router.get('/', async (req, res) => {
   try {
     // Get the user's ID from the authenticated user's token
-    const { id: userId } = req.user;
+    const userId = req.user.id;
 
     // Find the user by ID
     const user = await User.findById(userId);
@@ -45,6 +45,7 @@ router.get('/findById/:id', isLoggedIn, async (req, res) => {
       console.log('Enrollment data not found');
       return res.status(404).json({ message: 'Enrollment data not found' });
     }*/
+
     const profileData = {
       user: {
         firstname: user.firstname,
