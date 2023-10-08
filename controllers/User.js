@@ -3,14 +3,11 @@ const { Router } = require("express");
 const User = require("../models/User");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
-const nodemailer = require('nodemailer'); // Add nodemailer
-const emailConfig = require('./email'); // Add email configuration
-const { log } = require('mercedlogger');
 const { sendEmail } = require('./email');
 
 const router = Router();
 
-const { SECRET } = process.env;
+const { JWT_SECRET } = process.env;
 
 
 // Signup route to create a new user

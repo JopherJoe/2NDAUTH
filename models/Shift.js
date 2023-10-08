@@ -3,11 +3,6 @@ const {Schema, model} = require("../db/connection")
 const mongoose = require('mongoose')
 
 const changeSchema = new Schema({
-    userId: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'User', // Reference to the User model
-        required: true,
-    },
     firstname: {
         type: String,
         required: true
@@ -18,7 +13,8 @@ const changeSchema = new Schema({
     },
     email: {
         type:String,
-        required:true
+        required:true,
+        //unique: true
     },
     previouscourse: {
         type: String,
