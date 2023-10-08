@@ -1,7 +1,8 @@
 const express = require('express');
 const router = express.Router();
 const ChangeCourse = require('../models/Shift');
-const User = require('../models/User');
+require("dotenv").config();
+const { sendEmail } = require('./email');
 
 // Route to create a new course change request
 router.post('/request', async (req, res) => {
@@ -9,10 +10,9 @@ router.post('/request', async (req, res) => {
     // Extract course change request data from the request body
     const { firstname, lastname, previouscourse, newcourse, reason, email } = req.body;
 
-    if (!email || !/^\S+@\S+\.\S+$/.test(email)) {
+    if (!email) {
       return res.status(400).json({ error: 'Email is required and must be a valid email address' });
     }
-
     // Create a new course change request record in the database
     const courseChange = await ChangeCourse.create({
       firstname,
@@ -29,82 +29,62 @@ router.post('/request', async (req, res) => {
     console.error('Course change request error:', error);
     res.status(500).json({ error: 'Course change request failed' });
   }
+  const requestOption = {
+    from: process.env.EMAIL_USER,
+    to: req.body.email,
+    text: "Your change course has been sent",
+    subject: "Thank you for reaching us"
+  }
+    await sendEmail(requestOption);
 });
 
-// Route to approve a course change request
-router.put('/approve-request/:id', async (req, res) => {
+router.post ('/request-approve/:id', async (req, res) =>{
   try {
     const requestId = req.params.id;
-    const updatedRequest = await ChangeCourse.findByIdAndUpdate(
-      requestId,
-      { status: 'Approved' },
-      { new: true }
-    );
+    const approveRequest = await ChangeCourse.findById(requestId);
 
-    if (!updatedRequest) {
-      return res.status(404).json({ error: 'Course change request not found' });
+    if (!approveRequest){
+      return res.status(400).json({message: 'this is Undefined'});
     }
 
-    const email = req.body.email;
-    if (!email) {
-        return res.status(400).json({ error: 'Email is required in the request body' });
-    };
-
-    const userId = updatedRequest.userId;
-    const updatedCourse = updatedRequest.newcourse;
-    console.log('User ID:', userId);
-    const updatedUser = await User.findByIdAndUpdate(
-      userId,
-      { course: updatedCourse },
-      { new: true }
-    );
-    console.log('Updated User:', updatedUser);
-
-    if (!updatedUser) {
-      return res.status(404).json({ error: 'User not found' });
+    const recipientEmail = req.body.email;
+    if(!recipientEmail){
+      return res.status(400).json({message: 'Recipient email is missing'});
     }
-    const mailOptions = {
+    res.status(200).json({message: 'Your request has been approved', approveRequest});
+  } catch (error) {
+    res.status(500).json({message: 'error'})
+  }
+  const approveOption ={
+    from: process.env.EMAIL_USER,
+    to: req.body.email,
+    text: 'Congratulations, We would like to inform you that your change request has been APPROVED!',
+    subject: 'CHANGE COURSE APPROVE'
+  }
+  await sendEmail(approveOption);
+});
+
+router.post ('/request-reject/:id', async (req, res) =>{
+    try {
+      const requestId = req.params.id;
+      const rejectRequest = await ChangeCourse.findById(requestId);
+
+      if(!rejectRequest){
+        return res.status(400).json({message: 'This is Undefined'});
+      }
+      res.status(200).json({message: 'Your request has been rejected',rejectRequest});
+    } catch (error){
+      res.status(500).json({message: 'Error'})
+    }
+    const rejectOption = {
       from: process.env.EMAIL_USER,
       to: req.body.email,
-      subject: 'Course Change Approved',
-      text: 'Your course change request has been approved. Your new course is: ' + updatedCourse,
-    };
-    try {
-      await sendEmail(mailOptions);
-    } catch (error) {
-      console.error('Email sending error:', error);
+      text: 'Sorry, we would like to inform you that your change course was rejected',
+      subject: 'CHANGE COURSE REJECTED'
     }
-    res.status(200).json({ message: 'Course change request approved', updatedRequest });
-  } catch (error) {
-    console.error('Course change request approval error:', error);
-    res.status(500).json({ error: 'Course change request approval failed' });
-  }
+    await sendEmail(rejectOption);
 });
 
-
-// Route to reject a course change request
-router.put('/reject-request/:id', async (req, res) => {
-  try {
-    const requestId = req.params.id;
-
-    // Update the course change request status to 'Rejected' in the database
-    const updatedRequest = await ChangeCourse.findByIdAndUpdate(
-      requestId,
-      { status: 'Rejected' }, // Update 'status' field as needed
-      { new: true }
-    );
-
-    if (!updatedRequest) {
-      return res.status(404).json({ error: 'Course change request not found' });
-    }
-
-    // Respond with a success message or the updated request data
-    res.status(200).json({ message: 'Course change request rejected', updatedRequest });
-  } catch (error) {
-    console.error('Course change request rejection error:', error);
-    res.status(500).json({ error: 'Course change request rejection failed' });
-  }
-});
 
 router.get('/get-request', async (req, res) => {
   try {
