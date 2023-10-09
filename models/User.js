@@ -19,6 +19,7 @@ const UserSchema = new Schema({
   },
   contact_no: {
     type: Number,
+    required: true
   },
 });
 

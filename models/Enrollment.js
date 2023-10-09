@@ -31,8 +31,7 @@ const enrollmentSchema = new Schema({
     },
     enrolled:{
         type: Boolean,
-        default: false,
-        unique: true
+        default: false
     }
 
 
