@@ -4,7 +4,7 @@ class MyComponent extends EventEmitter {
   constructor() {
     super();
     // Increase the limit to 20 (or any other appropriate value)
-    this.setMaxListeners(50);
+    this.setMaxListeners(100);
   }
 
   // Add custom methods and event listeners for your component

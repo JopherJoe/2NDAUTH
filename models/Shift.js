@@ -28,6 +28,7 @@ const changeSchema = new Schema({
         type: String,
         required: true
     }
+
 });
 
 const ChangeCourse = model("ChangeCourse", changeSchema);
