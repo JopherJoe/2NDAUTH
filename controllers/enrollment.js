@@ -10,7 +10,21 @@ router.post('/', isLoggedIn, async (req, res) => {
 
     console.log('req.user:', req.user);
 
-    const { course, firstname, lastname, email, contact_no } = req.body;
+    const { course, 
+      firstname, 
+      lastname, 
+      email, 
+      contact_no,
+      guardian_contact, 
+      age, birthdate, 
+      mothername,
+      fathername,
+      address,
+      elemschool,
+      juniorschool,
+      seniorschool,
+      gender 
+    } = req.body;
 
     const enrollment = await Enrollment.create({
       course,
@@ -18,6 +32,15 @@ router.post('/', isLoggedIn, async (req, res) => {
       lastname,
       email,
       contact_no,
+      guardian_contact, 
+      age, birthdate, 
+      mothername,
+      fathername,
+      address,
+      elemschool,
+      juniorschool,
+      seniorschool,
+      gender,
       userId: req.user.id,
       enrolled: true
     });

@@ -50,6 +50,16 @@ router.get('/findById/:id', isLoggedIn, async (req, res) => {
       },
       enrollment: {
         course:  enrollment ? enrollment.course : 'Not enrolled',
+        age: data.user,
+        birthdate: data.user,
+        gender: data.user,
+        mothername: data.user,
+        fathername: data.user,
+        guardian_contact: data.user,
+        address: data.user,
+        elemschool: data.user,
+        juniorschool: data.user,
+        eniorschool: data.user
       },
     };
     res.status(200).json(profileData);
