@@ -23,6 +23,43 @@ const enrollmentSchema = new Schema({
         type: String,
         required: true
     },
+    guardian_contact: {
+        type:String,
+        required: true
+    },
+    age:{
+        type: String,
+        required:true
+    },
+    birthdate:{
+        type:String,
+        required: true
+    },
+    mothername:{
+        type:String,
+        required: true
+    },
+    fathername:{
+        type:String,
+        required:true
+    },
+    address:{
+        type:String,
+        required: true
+    },
+    elemschool:{
+        type: String,
+        required: true
+    },
+    juniorschool:{
+        type:String,
+        required: true
+    },
+    seniorschool:{
+        type:String,
+        required: true
+    },
+    
     userId: {
         type: Schema.Types.ObjectId, // This field will store the user's ID
         ref: 'User', // Reference to the User model
