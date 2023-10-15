@@ -59,6 +59,10 @@ const enrollmentSchema = new Schema({
         type:String,
         required: true
     },
+    gender:{
+        type: String,
+        required: true
+    },
     
     userId: {
         type: Schema.Types.ObjectId, // This field will store the user's ID
