@@ -1,13 +1,20 @@
 const { Schema, model } = require("../db/connection");
 
 const UserSchema = new Schema({
+
+  username: {
+    type: String,
+    unique: true, // Ensure uniqueness for usernames
+    required: true,
+  },
+  
   password: {
     type: String,
     required: true,
   },
   email: {
     type: String,
-    required: true
+    required: true,
   },
   firstname: {
     type: String,
@@ -19,7 +26,7 @@ const UserSchema = new Schema({
   },
   contact_no: {
     type: Number,
-    required: true
+    required: true,
   },
 });
 
